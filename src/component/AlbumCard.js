@@ -41,10 +41,14 @@ export default function AlbumCard({ album, playTrack }) {
                     Play
                 </button>
                 <button
-                    onClick={(e)=>handleSelectFavorite(album,e)}
-                    className={`bg-${favorites.some((favorite) => favorite.id === album.id) ? 'red' : 'green'}-500 hover:bg-${favorites.some((favorite) => favorite.id === album.id) ? 'red' : 'green'}-600 ml-3 text-white py-2 px-4 mt-2 rounded-full focus:outline-none`}
+                    onClick={(e) => handleSelectFavorite(album, e)}
+                    className={`${favorites.some((favorite) => favorite.id === album.id)
+                        ? 'bg-green-500 text-white'
+                        : 'bg-green-300 text-gray-700'
+                        } px-4 py-2 rounded-full ml-2 focus:outline-none`}
                 >
-                    {favorites.some((favorite) => favorite.id === album.id) ? 'Remove Album' : 'Add Album'}
+                    {favorites.some((favorite) => favorite.id === album.id)
+                        ? 'Remove Album' : 'Add Album'}
                 </button>
             </div>
         </div>
