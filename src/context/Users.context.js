@@ -31,13 +31,16 @@ const UserContext = createContext({
     setLoginModalOpen: () => Promise,
     isRegistrationModalOpen: Boolean,
     setRegistrationModalOpen: () => Promise,
-    handleSearch : () => null,
-    accessToken : "",
-    setAccessToken : () => Promise,
-    searchInput : "Tamil Melody",
-    setSearchInput : () => Promise,
-    album : [],
-    setAlbums : () => Promise,
+    handleSearch: () => null,
+    accessToken: "",
+    setAccessToken: () => Promise,
+    searchInput: "Tamil Melody",
+    setSearchInput: () => Promise,
+    album: [],
+    setAlbums: () => Promise,
+    favorites: [],
+    setFavorites: () => Promise,
+    handleSelectFavorite : () => null,
 })
 
 export const useUser = () => useContext(UserContext);
@@ -57,6 +60,7 @@ export default function UsersContextProvider({ children }) {
     const [accessToken, setAccessToken] = useState('');
     const [searchInput, setSearchInput] = useState('Tamil Melody');
     const [albums, setAlbums] = useState([]);
+    const [favorites, setFavorites] = useState([]);
 
     useEffect(() => {
         const URL = process.env.NODE_ENV === 'development' ? `${process.env.REACT_APP_DEV_URL_FOR_BACKEND}/users/${signinUser}` : `${process.env.REACT_APP_PRO_URL_FOR_BACKEND}/users/${signinUser}`;
@@ -177,42 +181,77 @@ export default function UsersContextProvider({ children }) {
     const handleSearch = async (token) => {
         const dynamicSearchInput = searchInput;
         var searchParameters = {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token,
-          },
-        };
-      
-        try {
-          // Fetch artist data using dynamicSearchQuery
-          const artistResponse = await fetch('https://api.spotify.com/v1/search?q=' + dynamicSearchInput + '&type=artist', searchParameters);
-          const artistData = await artistResponse.json();
-          const artistID = artistData.artists.items[0].id;
-      
-          // Fetch artist's albums
-          const albumResponse = await fetch('https://api.spotify.com/v1/artists/' + artistID + '/albums' + '?include_groups=album&market=IN&limit=50', searchParameters);
-          const albumData = await albumResponse.json();
-      
-          // Fetch and add album tracks to the albums
-          const albumsWithTracks = await Promise.all(albumData.items.map(async (album) => {
-            const tracksResponse = await fetch(`https://api.spotify.com/v1/albums/${album.id}/tracks`, {
-              method: 'GET',
-              headers: {
+            method: 'GET',
+            headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + token,
-              },
-            });
-            const tracksData = await tracksResponse.json();
-            album.tracks = tracksData.items;
-            return album;
-          }));
-      
-          setAlbums(albumsWithTracks);
+            },
+        };
+
+        try {
+            // Fetch artist data using dynamicSearchQuery
+            const artistResponse = await fetch('https://api.spotify.com/v1/search?q=' + dynamicSearchInput + '&type=artist', searchParameters);
+            const artistData = await artistResponse.json();
+            const artistID = artistData.artists.items[0].id;
+
+            // Fetch artist's albums
+            const albumResponse = await fetch('https://api.spotify.com/v1/artists/' + artistID + '/albums' + '?include_groups=album&market=IN&limit=50', searchParameters);
+            const albumData = await albumResponse.json();
+
+            // Fetch and add album tracks to the albums
+            const albumsWithTracks = await Promise.all(albumData.items.map(async (album) => {
+                const tracksResponse = await fetch(`https://api.spotify.com/v1/albums/${album.id}/tracks`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token,
+                    },
+                });
+                const tracksData = await tracksResponse.json();
+                album.tracks = tracksData.items;
+                return album;
+            }));
+
+            setAlbums(albumsWithTracks);
         } catch (error) {
-          console.error('Error fetching data:', error);
+            console.error('Error fetching data:', error);
         }
-      };
+    };
+
+
+    useEffect(() => {
+        const URL = process.env.NODE_ENV === 'development' ? `${process.env.REACT_APP_DEV_URL_FOR_BACKEND}/favorite/${signinUser}` : `${process.env.REACT_APP_PRO_URL_FOR_BACKEND}/favorite/${signinUser}`;
+        axios.get(URL)
+            .then(res => {
+                setFavorites(res.data.result);
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }, [signinUser])
+
+    const handleSelectFavorite = async (album, e) => {
+        if (favorites.some((favorite) => favorite.id === album.id)) {
+            const matched = favorites.filter((favorite) => favorite.id !== album.id);
+            setFavorites(matched);
+            const URL = process.env.NODE_ENV === 'development' ? `${process.env.REACT_APP_DEV_URL_FOR_BACKEND}/favorite/delete/${signinUser}/${album.name}` : `${process.env.REACT_APP_PRO_URL_FOR_BACKEND}/favorite/delete/${signinUser}/${album.name}`;
+            axios.delete(URL)
+                .then(res => {
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+        } else {
+            setFavorites([...favorites, album]);
+            const URL = process.env.NODE_ENV === 'development' ? `${process.env.REACT_APP_DEV_URL_FOR_BACKEND}/favorite/add/${signinUser}` : `${process.env.REACT_APP_PRO_URL_FOR_BACKEND}/favorite/add/${signinUser}`;
+            axios.post(URL, album)
+                .then(res => {
+                })
+                .catch(err => {
+                    console.log("Error", err)
+                })
+        }
+    };
 
 
     const value = {
@@ -247,6 +286,9 @@ export default function UsersContextProvider({ children }) {
         setSearchInput,
         albums,
         setAlbums,
+        favorites,
+        setFavorites,
+        handleSelectFavorite
     }
 
     return (

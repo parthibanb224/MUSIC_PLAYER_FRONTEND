@@ -5,6 +5,7 @@ import FrontPage from './pages/FrontPage';
 import ResetPasswordForm from './component/ResetPasswordForm';
 import { useUser } from './context/Users.context';
 import jwtDecode from 'jwt-decode';
+import FavoriteMusic from './pages/FavoriteMusic';
 
 function App() {
 
@@ -27,7 +28,10 @@ function App() {
             <Route path='/ResetPassword/:token' Component={ResetPasswordForm}></Route>
           </>
         ) : (
-          <Route path='/app' Component={MusicApp}></Route>
+          <>
+            <Route path='/app' Component={MusicApp}></Route>
+            <Route path='/favorite' Component={FavoriteMusic}></Route>
+          </>
         )}
       </Routes>
     </div>

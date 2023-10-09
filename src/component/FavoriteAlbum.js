@@ -1,16 +1,13 @@
-import { useState } from 'react';
-import { useUser } from '../context/Users.context';
+import React, { useState } from 'react'
 
-export default function AlbumCard({ album, playTrack }) {
+export default function FavoriteAlbum({album,playTrack}) {
     const [selectedTrack, setSelectedTrack] = useState('');
-    const { favorites, handleSelectFavorite } = useUser();
-
+    
     const handlePlayTrack = () => {
         if (selectedTrack) {
             playTrack(selectedTrack);
         }
     };
-
     return (
         <div className="max-w-sm rounded overflow-hidden shadow-lg mx-auto">
             <img src={album.images[0].url} alt={album.name} className="w-full h-64 object-cover" />
@@ -40,13 +37,7 @@ export default function AlbumCard({ album, playTrack }) {
                 >
                     Play
                 </button>
-                <button
-                    onClick={(e)=>handleSelectFavorite(album,e)}
-                    className={`bg-${favorites.some((favorite) => favorite.id === album.id) ? 'red' : 'green'}-500 hover:bg-${favorites.some((favorite) => favorite.id === album.id) ? 'red' : 'green'}-600 ml-3 text-white py-2 px-4 mt-2 rounded-full focus:outline-none`}
-                >
-                    {favorites.some((favorite) => favorite.id === album.id) ? 'Remove Album' : 'Add Album'}
-                </button>
             </div>
         </div>
-    );
+    )
 }

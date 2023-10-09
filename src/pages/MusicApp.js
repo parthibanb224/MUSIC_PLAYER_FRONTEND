@@ -53,21 +53,18 @@ export default function MusicApp() {
         <div className='w-screen h-auto'>
             <Navbar />
 
-            {/* Render loading spinner or content based on the loading state */}
             {loading ? (
                 <div className="flex items-center justify-center h-screen">
                     <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
                 </div>
             ) : (
                 <div>
-                    {/* Album cards */}
-                    <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4 pt-20 pb-40">
+                    <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4 pt-24 pb-40">
                         {albums?.map(album => (
                             <AlbumCard key={album.id} album={album} playTrack={playTrack} />
                         ))}
                     </div>
 
-                    {/* Sticky iframe container */}
                     <div className="fixed bottom-0 w-full bg-white shadow-lg z-50 p-0">
                         <iframe
                             ref={(ref) => setAudioRef(ref)}
