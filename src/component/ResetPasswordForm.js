@@ -30,7 +30,7 @@ function ResetPasswordForm() {
   }
   return (
     <div className="bg-white p-8 rounded-lg shadow-lg">
-      <h2 className="text-2xl font-semibold mb-6">Reset Password</h2>
+      <h2 className="text-2xl text-black font-semibold mb-6">Reset Password</h2>
       <form onSubmit={handleResetPassword}>
         <div className="mb-4 relative">
           <input

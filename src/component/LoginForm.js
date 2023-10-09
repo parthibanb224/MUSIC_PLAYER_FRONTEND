@@ -9,7 +9,7 @@ function LoginForm({onRegisterClick,onForgotPasswordClick}) {
 
   return (
     <div className="bg-white p-8 rounded-lg shadow-lg">
-      <h2 className="text-2xl font-semibold mb-6">Login</h2>
+      <h2 className="text-2xl text-black font-semibold mb-6">Login</h2>
       <form onSubmit={handleLogin}>
         <div className="mb-4">
           <input

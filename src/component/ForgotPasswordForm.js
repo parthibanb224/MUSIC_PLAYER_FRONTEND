@@ -8,7 +8,7 @@ function ForgotPasswordForm() {
 
   return (
     <div className="bg-white p-8 rounded-lg shadow-lg">
-      <h2 className="text-2xl font-semibold mb-6">Forgot Password</h2>
+      <h2 className="text-2xl text-black font-semibold mb-6">Forgot Password</h2>
       <form onSubmit={handleMail}>
         <div className="mb-4">
           <input

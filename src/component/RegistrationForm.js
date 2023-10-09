@@ -9,7 +9,7 @@ function RegistrationForm() {
 
   return (
     <div className="bg-white p-8 rounded-lg shadow-lg">
-      <h2 className="text-2xl font-semibold mb-6">Register</h2>
+      <h2 className="text-2xl text-black font-semibold mb-6">Register</h2>
       <form onSubmit={handleSignup}>
         <div className="mb-6">
           <input
